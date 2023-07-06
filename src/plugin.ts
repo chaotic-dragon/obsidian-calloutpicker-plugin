@@ -1,18 +1,26 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import { CalloutPickerPluginSettingsTab, CalloutPickerPluginSettings } from './settings'
-import { CalloutSuggest } from 'suggest';
+import { CalloutEditorSuggest } from 'suggest';
+import { CalloutManager, getApi } from "obsidian-callout-manager";
 
 const DEFAULT_SETTINGS: CalloutPickerPluginSettings = {
  	mySetting: 'default'
 }
 
 export class CalloutPickerPluginManager extends Plugin {
-    settings: CalloutPickerPluginSettings
+    settings: CalloutPickerPluginSettings;
+    public calloutManager?: CalloutManager<true> | undefined;
 
     async onload() {
         await this.loadSettings();
+        
         this.addSettingTab(new CalloutPickerPluginSettingsTab(this.app, this));
-        this.registerEditorSuggest(new CalloutSuggest(app, this.settings));
+        
+        this.registerEditorSuggest(new CalloutEditorSuggest(app, this));
+        
+        this.app.workspace.onLayoutReady(async () => {
+            this.calloutManager = await getApi(this);
+        });
     }
 
     onunload() {

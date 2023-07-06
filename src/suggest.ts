@@ -1,27 +1,27 @@
-import {
-    App,
-    Editor,
-    EditorPosition,
-    EditorSuggest,
-    EditorSuggestContext,
-    EditorSuggestTriggerInfo,
-    MarkdownRenderer,
-    TFile,
-} from "obsidian";
+import { App, Editor, EditorPosition, EditorSuggest, EditorSuggestContext, EditorSuggestTriggerInfo, MarkdownRenderer, TFile } from "obsidian";
 import { CalloutPickerPluginSettings } from "settings";
+import { Callout, CalloutID } from "obsidian-callout-manager";
+import { CalloutPickerPluginManager } from "plugin";
 
-interface SuggestInfo {
-    content: string | undefined,
-    calloutType: string,
-    context: EditorSuggestContext
-}
+// interface SuggestInfo {
+//     content: string | undefined,
+//     calloutType: string,
+//     context: EditorSuggestContext
+// }
 
-export class CalloutSuggest extends EditorSuggest<SuggestInfo> {
+export class CalloutEditorSuggest extends EditorSuggest<string> {
 
     // group 1: any preceding text
     // group 2: the &&
     // group 3: anything after && but not whitespace
     private regex = (/(.*)(&&)(\S.*|())/);
+    private plugin: CalloutPickerPluginManager;
+
+    constructor(app: App, plugin: CalloutPickerPluginManager) {
+        super(app);
+        this.plugin = plugin;
+    }
+    
 
     onTrigger(cursor: EditorPosition, editor: Editor, file: TFile | null): EditorSuggestTriggerInfo | null {
         const line = editor.getLine(cursor.line);
@@ -40,45 +40,58 @@ export class CalloutSuggest extends EditorSuggest<SuggestInfo> {
             };
     }
 
-    getSuggestions(context: EditorSuggestContext): SuggestInfo[] | Promise<SuggestInfo[]> {
+    getSuggestions(context: EditorSuggestContext): string[] | Promise<string[]> {
 
-        const line = context.editor.getLine(context.start.line);
-        const content = line.match(this.regex)?.[1];
+        // get the callouts
+        let callouts = this.plugin.calloutManager?.getCallouts();
+        let infos: string[] = ["test"];
+        
+        console.log(this.plugin.calloutManager);
 
-        let infos: SuggestInfo[] = [
-            { calloutType: "asdf", content: content, context: context },
-            { calloutType: "qwer", content: content, context: context },
-            { calloutType: "test", content: content, context: context },
-        ];
+        if(callouts) {
+            callouts.forEach(callout => {
+                infos.push(callout.id);
+            });
+        }
+
+        // const line = context.editor.getLine(context.start.line);
+        // const content = line.match(this.regex)?.[1];
+
+        //const infos = ["test1", "test2", "test3"];
+
+        // let infos: SuggestInfo[] = [
+        //     { calloutType: "asdf", content: content, context: context },
+        //     { calloutType: "qwer", content: content, context: context },
+        //     { calloutType: "test", content: content, context: context },
+        // ];
 
         // return a filtered list of suggestions
-        return infos.filter(s => s.calloutType.contains(context.query));
+        return infos.filter(s => s.contains(context.query));
     }
 
-    renderSuggestion(value: SuggestInfo, el: HTMLElement): void {
-        el.setText(value.calloutType);
+    renderSuggestion(value: string, el: HTMLElement): void {
+        el.setText(value);
     }
 
-    selectSuggestion(value: SuggestInfo, evt: MouseEvent | KeyboardEvent): void {
-        var linkResult = `> [!${value.calloutType}]\n> `;
+    selectSuggestion(value: string, evt: MouseEvent | KeyboardEvent): void {
+        if (this.context) {
+            const line = this.context.editor.getLine(this.context.start.line);
+            const content = line.match(this.regex)?.[1];
 
-        if (value.content)
-            linkResult += `${value.content}\n\n`
+            var linkResult = `> [!${value}]\n> `;
 
-        value.context.editor.replaceRange(
-            linkResult,
-            {
-                ch: 0, 
-                line: value.context.start.line
-            },
-            value.context.end
-        );
-    }
+            if (content)
+                linkResult += `${content}\n\n`
 
-    private app: App;
+            this.context.editor.replaceRange(
+                linkResult,
+                {
+                    ch: 0,
+                    line: this.context.start.line
+                },
+                this.context.end
+            );
+        }
 
-    constructor(app: App, settings: CalloutPickerPluginSettings) {
-        super(app);
-        this.app = app;
     }
 }
