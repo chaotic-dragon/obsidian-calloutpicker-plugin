@@ -1,8 +1,8 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { App, PluginSettingTab, Setting } from 'obsidian';
 import { CalloutPickerPluginManager } from './plugin';
 
 export interface CalloutPickerPluginSettings {
-    mySetting: string;
+	triggerPhrase: string;
 }
 
 export class CalloutPickerPluginSettingsTab extends PluginSettingTab {
@@ -14,22 +14,31 @@ export class CalloutPickerPluginSettingsTab extends PluginSettingTab {
 	}
 
 	display(): void {
-		const {containerEl} = this;
+		const { containerEl } = this;
 
 		containerEl.empty();
 
-		containerEl.createEl('h2', {text: 'Settings for Callout Picker.'});
+		containerEl.createEl('h2', { text: 'Settings for Callout Picker.' });
 
 		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
+			.setName('Trigger phrase')
+			.setDesc('The trigger phrase to show the callout selection popup')
 			.addText(text => text
-				.setPlaceholder('Enter your secret')
-				.setValue(this.plugin.settings.mySetting)
+				.setPlaceholder('Enter the trigger phrase')
+				.setValue(this.plugin.settings.triggerPhrase)
 				.onChange(async (value) => {
-					console.log('Secret: ' + value);
-					this.plugin.settings.mySetting = value;
+					this.plugin.settings.triggerPhrase = value;
 					await this.plugin.saveSettings();
 				}));
+
+		// new Setting(containerEl)
+		// 	.setName('Capitalize callout titles')
+		// 	.setDesc('Indicate if callout titles should be capitalized or not')
+		// 	.addToggle(toggle => toggle
+		// 		.setValue(this.plugin.settings.capitalizeCalloutTitles)
+		// 		.onChange(async (value) => { 
+		// 			this.plugin.settings.capitalizeCalloutTitles = value; 
+		// 			await this.plugin.saveSettings(); 
+		// 		}));
 	}
 }

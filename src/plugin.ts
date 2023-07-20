@@ -1,26 +1,26 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { Plugin } from 'obsidian';
 import { CalloutPickerPluginSettingsTab, CalloutPickerPluginSettings } from './settings'
-import { CalloutEditorSuggest } from 'suggest';
-import { CalloutManager, getApi } from "obsidian-callout-manager";
+import { CalloutEditorSuggest } from 'callout-editor-suggest';
+import { CalloutManager } from "callout-manager"
+import { isInstalled } from 'obsidian-callout-manager';
 
 const DEFAULT_SETTINGS: CalloutPickerPluginSettings = {
- 	mySetting: 'default'
+    triggerPhrase: '&&',
 }
 
 export class CalloutPickerPluginManager extends Plugin {
-    settings: CalloutPickerPluginSettings;
-    public calloutManager?: CalloutManager<true> | undefined;
+    public settings: CalloutPickerPluginSettings;
+    public calloutManager: CalloutManager;
+    private calloutEditorSuggest: CalloutEditorSuggest;
 
     async onload() {
         await this.loadSettings();
-        
         this.addSettingTab(new CalloutPickerPluginSettingsTab(this.app, this));
-        
-        this.registerEditorSuggest(new CalloutEditorSuggest(app, this));
-        
-        this.app.workspace.onLayoutReady(async () => {
-            this.calloutManager = await getApi(this);
-        });
+        this.calloutEditorSuggest = new CalloutEditorSuggest(app, this);
+        this.registerEditorSuggest(this.calloutEditorSuggest);
+        this.calloutManager = await CalloutManager.create(this.app, this);
+        // periodically check if the obsidian-callout-manager is installed
+        this.registerInterval(window.setInterval(() => this.calloutManager.handleObsidianCalloutManagerInstallationStatusChanged(), 1000));
     }
 
     onunload() {
@@ -31,8 +31,11 @@ export class CalloutPickerPluginManager extends Plugin {
 	}
 
 	async saveSettings() {
-		await this.saveData(this.settings);
+		await this.saveData(this.settings)
+            .then(() => this.calloutEditorSuggest.setTriggerExpression(this.settings.triggerPhrase));
 	}
 
-
+    
 }
+
+

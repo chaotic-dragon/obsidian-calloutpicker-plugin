@@ -22,6 +22,6 @@
 		"typescript": "4.7.4"
 	},
 	"dependencies": {
-		"obsidian-callout-manager": "^1.0.2-alpha1"
+		"obsidian-callout-manager": "^1.0.1"
 	}
 }
