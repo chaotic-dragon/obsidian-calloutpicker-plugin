@@ -1,6 +1,6 @@
 import { App, Editor, EditorPosition, EditorSuggest, EditorSuggestContext, EditorSuggestTriggerInfo, TFile } from "obsidian";
 import { CalloutPickerPlugin } from "plugin";
-import { Callout } from "callout";
+import { Callout } from "callout-manager";
 import { CalloutPreviewRenderer as CalloutPreviewRenderer } from "callout-preview-renderer";
 
 export class CalloutEditorSuggest extends EditorSuggest<Callout> {

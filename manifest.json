@@ -1,5 +1,5 @@
 {
-	"id": "obsidian-calloutpicker-plugin",
+	"id": "callout-picker",
 	"name": "Callout Picker",
 	"version": "1.0.0",
 	"minAppVersion": "1.3.5",
