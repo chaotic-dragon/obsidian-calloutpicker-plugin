@@ -3,7 +3,7 @@
 	"name": "Callout Picker",
 	"version": "1.0.0",
 	"minAppVersion": "1.3.5",
-	"description": "",
+	"description": "A callout picker plugin that helps you create callouts in your documents.",
 	"author": "Chaotic Dragon",
 	"authorUrl": "https://github.com/chaotic-dragon",
 	"fundingUrl": "https://ko-fi.com/chaotic_dragon",
