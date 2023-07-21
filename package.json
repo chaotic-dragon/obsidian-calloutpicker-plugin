@@ -1,5 +1,5 @@
 {
-	"name": "callout-picker",
+	"name": "obsidian-callout-picker",
 	"version": "1.0.0",
 	"description": "A callout picker plugin that helps you create callouts in your documents.",
 	"main": "main.js",
