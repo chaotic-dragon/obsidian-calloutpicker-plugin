@@ -20,40 +20,23 @@ export class CalloutManager {
     constructor(private readonly app: App, private readonly plugin: CalloutPickerPlugin) { }
 
     /**
-     * @summary Factory method to create the CalloutManager
-     * @param app The app
-     * @param plugin The plugin
-     * @returns The newly created CalloutManager instance
-     */
-    public static async create(app: App, plugin: CalloutPickerPlugin): Promise<CalloutManager> {
-        const calloutManager: CalloutManager = new CalloutManager(app, plugin);
-        if (isInstalled(plugin.app)) {
-            app.workspace.onLayoutReady(async () => {
-                calloutManager.obsidianCalloutManager = await getApi(calloutManager.plugin);
-            });
-            calloutManager.useObsidianCalloutManager = true;
-        }
-        return calloutManager;
-    }
-
-    /**
      * @summary Handler that checks if the obsidian-plugin-manager was installed or uninstalled and acts accordingly.
      */
-    public handleObsidianCalloutManagerInstallationStatusChanged(): void {
-        let recreateCallouts: boolean;
+    public handleObsidianCalloutManagerInstallationStatus(): void {
         // changed from isInstalled -> !isInstalled
         if (this.useObsidianCalloutManager && !isInstalled(this.plugin.app)) {
             this.obsidianCalloutManager = undefined;
             this.useObsidianCalloutManager = false;
-            this.callouts = [];
+            this.callouts = []; // Set to empty array, next get call will re-populate
         }
         // changed from !isInstalled -> isInstalled
-        else if (isInstalled(this.plugin.app) && !this.useObsidianCalloutManager) {
+        else if (!this.useObsidianCalloutManager && isInstalled(this.plugin.app)) {
             this.app.workspace.onLayoutReady(async () => {
                 this.obsidianCalloutManager = await getApi(this.plugin);
+                this.useObsidianCalloutManager = true;
+                
             });
-            this.useObsidianCalloutManager = true;
-            this.callouts = [];
+            this.callouts = []; // Set to empty array, next get call will re-populate
         }
     }
 

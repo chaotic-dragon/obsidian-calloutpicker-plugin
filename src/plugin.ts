@@ -13,12 +13,9 @@ export class CalloutPickerPlugin extends Plugin {
         this.addSettingTab(new CalloutPickerPluginSettingsTab(this.app, this));
         this.calloutEditorSuggest = new CalloutEditorSuggest(app, this);
         this.registerEditorSuggest(this.calloutEditorSuggest);
-        this.calloutManager = await CalloutManager.create(this.app, this);
+        this.calloutManager = new CalloutManager(app, this);
         // periodically check if the obsidian-callout-manager is installed
-        this.registerInterval(window.setInterval(() => this.calloutManager.handleObsidianCalloutManagerInstallationStatusChanged(), 1000));
-    }
-
-    onunload() {
+        this.registerInterval(window.setInterval(() => this.calloutManager.handleObsidianCalloutManagerInstallationStatus(), 1000));
     }
 
     async loadSettings() {
@@ -29,8 +26,6 @@ export class CalloutPickerPlugin extends Plugin {
 		await this.saveData(this.settings)
             .then(() => this.calloutEditorSuggest.setTriggerExpression(this.settings.triggerPhrase));
 	}
-
-    
 }
 
 
