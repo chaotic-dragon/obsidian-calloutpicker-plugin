@@ -1,5 +1,5 @@
 import { App, Editor, EditorPosition, EditorSuggest, EditorSuggestContext, EditorSuggestTriggerInfo, TFile } from "obsidian";
-import { CalloutPickerPluginManager } from "plugin";
+import { CalloutPickerPlugin } from "plugin";
 import { Callout } from "callout";
 import { CalloutPreviewRenderer as CalloutPreviewRenderer } from "callout-preview-renderer";
 
@@ -9,7 +9,7 @@ export class CalloutEditorSuggest extends EditorSuggest<Callout> {
     private calloutMarkdownExpression: RegExp = /^(> \[!(\S.*|())\])$/;
     private suggestionTrigger: string;
 
-    constructor(app: App, private readonly plugin: CalloutPickerPluginManager) {
+    constructor(app: App, private readonly plugin: CalloutPickerPlugin) {
         super(app);
         this.setTriggerExpression(this.plugin.settings.triggerPhrase);
     }

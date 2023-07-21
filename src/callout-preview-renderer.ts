@@ -1,5 +1,5 @@
 import { getIcon, setIcon } from "obsidian";
-import { Callout } from "callout";
+import { Callout } from "callout-manager";
 
 export class CalloutPreviewRenderer {
     private static readonly DEFAULT_ICON: string = "lucide-pencil";
@@ -12,11 +12,9 @@ export class CalloutPreviewRenderer {
         const titleDiv: HTMLDivElement = titleContainer.createDiv();
         
         calloutDiv.addClass("callout");
+        calloutDiv.addClass("callout-picker-preview");
         calloutDiv.setAttribute("data-callout", callout.id);
-        calloutDiv.style.margin = "0px";
-        calloutDiv.style.padding = "8px";
-        calloutDiv.style.width = "256px";
-        
+
         titleContainer.addClass("callout-title");
         iconDiv.addClass("callout-icon");    
         titleDiv.addClass("callout-title-inner");    

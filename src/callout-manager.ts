@@ -1,7 +1,13 @@
-import { Callout } from "callout";
 import { App } from "obsidian";
 import { CalloutManager as ObsidianCalloutManager, getApi, isInstalled } from "obsidian-callout-manager";
-import { CalloutPickerPluginManager } from "plugin";
+import { CalloutPickerPlugin } from "plugin";
+
+export interface Callout {
+    id: string;
+    color: string;
+    icon: string;
+    title: string;
+}
 
 /**
  * @summary Manages callouts. Uses obsidian-callout-manager if available, otherwise uses defaults.
@@ -11,7 +17,7 @@ export class CalloutManager {
     private useObsidianCalloutManager: boolean;
     private callouts: Callout[] = [];
 
-    constructor(private readonly app: App, private readonly plugin: CalloutPickerPluginManager) { }
+    constructor(private readonly app: App, private readonly plugin: CalloutPickerPlugin) { }
 
     /**
      * @summary Factory method to create the CalloutManager
@@ -19,7 +25,7 @@ export class CalloutManager {
      * @param plugin The plugin
      * @returns The newly created CalloutManager instance
      */
-    public static async create(app: App, plugin: CalloutPickerPluginManager): Promise<CalloutManager> {
+    public static async create(app: App, plugin: CalloutPickerPlugin): Promise<CalloutManager> {
         const calloutManager: CalloutManager = new CalloutManager(app, plugin);
         if (isInstalled(plugin.app)) {
             app.workspace.onLayoutReady(async () => {

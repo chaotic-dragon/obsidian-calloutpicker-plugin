@@ -1,14 +1,9 @@
 import { Plugin } from 'obsidian';
-import { CalloutPickerPluginSettingsTab, CalloutPickerPluginSettings } from './settings'
+import { CalloutPickerPluginSettingsTab, CalloutPickerPluginSettings, DEFAULT_SETTINGS } from './settings'
 import { CalloutEditorSuggest } from 'callout-editor-suggest';
 import { CalloutManager } from "callout-manager"
-import { isInstalled } from 'obsidian-callout-manager';
 
-const DEFAULT_SETTINGS: CalloutPickerPluginSettings = {
-    triggerPhrase: '&&',
-}
-
-export class CalloutPickerPluginManager extends Plugin {
+export class CalloutPickerPlugin extends Plugin {
     public settings: CalloutPickerPluginSettings;
     public calloutManager: CalloutManager;
     private calloutEditorSuggest: CalloutEditorSuggest;

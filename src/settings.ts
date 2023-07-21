@@ -1,14 +1,18 @@
 import { App, PluginSettingTab, Setting } from 'obsidian';
-import { CalloutPickerPluginManager } from './plugin';
+import { CalloutPickerPlugin } from './plugin';
 
 export interface CalloutPickerPluginSettings {
 	triggerPhrase: string;
 }
 
-export class CalloutPickerPluginSettingsTab extends PluginSettingTab {
-	plugin: CalloutPickerPluginManager;
+export const DEFAULT_SETTINGS: CalloutPickerPluginSettings = {
+    triggerPhrase: '>!',
+}
 
-	constructor(app: App, plugin: CalloutPickerPluginManager) {
+export class CalloutPickerPluginSettingsTab extends PluginSettingTab {
+	plugin: CalloutPickerPlugin;
+
+	constructor(app: App, plugin: CalloutPickerPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
@@ -30,15 +34,5 @@ export class CalloutPickerPluginSettingsTab extends PluginSettingTab {
 					this.plugin.settings.triggerPhrase = value;
 					await this.plugin.saveSettings();
 				}));
-
-		// new Setting(containerEl)
-		// 	.setName('Capitalize callout titles')
-		// 	.setDesc('Indicate if callout titles should be capitalized or not')
-		// 	.addToggle(toggle => toggle
-		// 		.setValue(this.plugin.settings.capitalizeCalloutTitles)
-		// 		.onChange(async (value) => { 
-		// 			this.plugin.settings.capitalizeCalloutTitles = value; 
-		// 			await this.plugin.saveSettings(); 
-		// 		}));
 	}
 }

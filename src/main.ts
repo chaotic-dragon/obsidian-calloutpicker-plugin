@@ -1,2 +1,2 @@
-import { CalloutPickerPluginManager } from './plugin';
-export default CalloutPickerPluginManager;
+import { CalloutPickerPlugin } from './plugin';
+export default CalloutPickerPlugin;
